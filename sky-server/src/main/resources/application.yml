@@ -29,6 +29,7 @@ logging:
         service: info
         controller: info
 
+#自定义jwt的相关信息，直接引用
 sky:
   jwt:
     # 设置jwt签名加密时使用的秘钥
