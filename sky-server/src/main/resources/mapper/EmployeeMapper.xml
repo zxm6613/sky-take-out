@@ -18,7 +18,6 @@
                update_user
         from employee
     </sql>
-
     <update id="update">
         update employee
         <set>
@@ -31,7 +30,7 @@
             <if test="phone != null and phone != ''">
                 phone = #{phone},
             </if>
-            <if test="sex != null and">
+            <if test="sex != null">
                 sex = #{sex},
             </if>
             <if test="idNumber != null and idNumber != ''">
@@ -40,17 +39,11 @@
             <if test="status != null">
                 status = #{status},
             </if>
-            <if test="createTime != null and createTime != ''">
-                create_time = #{createTime},
-            </if>
-            <if test="updateTime != null and updateTime != ''">
-                update_user = #{updateTime},
-            </if>
-            <if test="createUser != null">
-                create_user = #{createUser},
-            </if>
             <if test="updateTime != null">
-                update_time = #{updateUser}
+                update_time = #{updateTime},
+            </if>
+            <if test="updateUser != null">
+                update_user = #{updateUser}
             </if>
         </set>
         where id = #{id}
@@ -65,6 +58,11 @@
             </if>
         </where>
         order by create_time desc
+    </select>
+
+    <select id="selectById" resultType="com.sky.entity.Employee">
+        <include refid="common"/>
+        where id = #{id}
     </select>
 
 </mapper>

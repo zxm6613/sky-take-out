@@ -15,6 +15,7 @@ import com.sky.exception.AccountNotFoundException;
 import com.sky.exception.PasswordErrorException;
 import com.sky.mapper.EmployeeMapper;
 import com.sky.result.PageResult;
+import com.sky.result.Result;
 import com.sky.service.EmployeeService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -122,6 +123,38 @@ public class EmployeeServiceImpl implements EmployeeService {
                 .id(id)
                 .build();
         employeeMapper.update(employee);
+    }
+
+    /**
+     * 根据id查询回显员工信息
+     */
+    @Override
+    public Employee selectById(Long id) {
+       return employeeMapper.selectById(id);
+    }
+
+    /**
+     * 编辑员工信息
+     */
+    @Override
+    public Result<Object> edit(EmployeeDTO employeeDTO) {
+        //方式一：
+//        Employee employee = Employee.builder()
+//                .id(employeeDTO.getId())
+//                .idNumber(employeeDTO.getIdNumber())
+//                .name(employeeDTO.getName())
+//                .phone(employeeDTO.getPhone())
+//                .sex(employeeDTO.getSex())
+//                .username(employeeDTO.getUsername())
+//                .build();
+        //方式二：
+        Employee employee = new Employee();
+        BeanUtils.copyProperties(employeeDTO,employee);
+
+        employee.setUpdateTime(LocalDateTime.now());
+        employee.setUpdateUser(BaseContext.getCurrentId());
+        employeeMapper.update(employee);
+        return Result.success();
     }
 
 }

@@ -35,4 +35,9 @@ public interface EmployeeMapper {
      * 启用和禁用功能  以及编辑员工功能
      */
     void update(Employee employee);
+
+    /**
+     * 根据id查询回显员工信息
+     */
+    Employee selectById(Long id);
 }
