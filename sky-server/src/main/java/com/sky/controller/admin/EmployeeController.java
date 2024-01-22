@@ -1,6 +1,7 @@
 package com.sky.controller.admin;
 
 import com.sky.constant.JwtClaimsConstant;
+import com.sky.dto.EmployeeDTO;
 import com.sky.dto.EmployeeLoginDTO;
 import com.sky.entity.Employee;
 import com.sky.properties.JwtProperties;
@@ -8,6 +9,7 @@ import com.sky.result.Result;
 import com.sky.service.EmployeeService;
 import com.sky.utils.JwtUtil;
 import com.sky.vo.EmployeeLoginVO;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -34,6 +36,7 @@ public class EmployeeController {
     /**
      * 登录
      */
+
     @PostMapping("/login")
     public Result<EmployeeLoginVO> login(@RequestBody EmployeeLoginDTO employeeLoginDTO) {
         log.info("员工登录：{}", employeeLoginDTO);
@@ -61,9 +64,22 @@ public class EmployeeController {
     /**
      * 退出
      */
+    @ApiOperation(("员工退出"))
     @PostMapping("/logout")
     public Result<String> logout() {
         return Result.success();
     }
 
+
+    /**
+     * 添加员工
+     */
+    @PostMapping
+    @ApiOperation("添加员工")
+    public Result<Object> save(@RequestBody EmployeeDTO employeeDTO){
+        log.info("当前controller线程的ID为{}", Thread.currentThread().getId());
+        log.info("员工{}",employeeDTO);
+        employeeService.save(employeeDTO);
+        return Result.success();
+    }
 }
