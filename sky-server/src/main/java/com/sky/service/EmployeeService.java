@@ -7,6 +7,12 @@ import com.sky.entity.Employee;
 import com.sky.result.PageResult;
 import com.sky.result.Result;
 
+/**
+ * 员工逻辑接口
+ *
+ * @author 周简coding~~~
+ * @date 2024/01/23
+ */
 public interface EmployeeService {
 
     /**

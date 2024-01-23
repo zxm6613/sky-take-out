@@ -4,7 +4,6 @@ import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.sky.constant.MessageConstant;
 import com.sky.constant.StatusConstant;
-import com.sky.context.BaseContext;
 import com.sky.dto.CategoryDTO;
 import com.sky.dto.CategoryPageQueryDTO;
 import com.sky.entity.Category;
@@ -18,7 +17,6 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -77,10 +75,10 @@ public class CategoryServiceImpl implements CategoryService {
         //复制属性，用BeanUtils ,从源到目的
         BeanUtils.copyProperties(categoryDTO, category);
         category.setStatus(StatusConstant.DISABLE); //默认禁用
-        category.setCreateTime(LocalDateTime.now());
-        category.setUpdateTime(LocalDateTime.now());
-        category.setCreateUser(BaseContext.getCurrentId()); //在本次线程的空间中取出ID值
-        category.setUpdateUser(BaseContext.getCurrentId());
+//        category.setCreateTime(LocalDateTime.now());
+//        category.setUpdateTime(LocalDateTime.now());
+//        category.setCreateUser(BaseContext.getCurrentId()); //在本次线程的空间中取出ID值
+//        category.setUpdateUser(BaseContext.getCurrentId());
         categoryMapper.insert(category);
     }
 
@@ -108,8 +106,8 @@ public class CategoryServiceImpl implements CategoryService {
     public void updateCategory(CategoryDTO categoryDTO) {
         Category category = new Category();
         BeanUtils.copyProperties(categoryDTO, category);
-        category.setUpdateUser(BaseContext.getCurrentId());
-        category.setUpdateTime(LocalDateTime.now());
+//        category.setUpdateUser(BaseContext.getCurrentId());
+//        category.setUpdateTime(LocalDateTime.now());
         categoryMapper.update(category);
     }
 
@@ -131,6 +129,7 @@ public class CategoryServiceImpl implements CategoryService {
      */
     @Override
     public void deleteById(Long id) {
+        //这里有一个注意点，套餐和分类中可能与菜品有所绑定，如果绑定就不能删除
         int count = dishMapper.selectCountByCategoryId(id);
         if (count > 0) throw new BaseException(MessageConstant.CATEGORY_BE_RELATED_BY_DISH);
 

@@ -26,6 +26,12 @@ import org.springframework.util.DigestUtils;
 import java.time.LocalDateTime;
 import java.util.List;
 
+/**
+ * 员工逻辑实现
+ *
+ * @author 周简coding~~~
+ * @date 2024/01/23
+ */
 @Service
 @Slf4j
 public class EmployeeServiceImpl implements EmployeeService {
@@ -82,13 +88,13 @@ public class EmployeeServiceImpl implements EmployeeService {
         //0表示禁用，1表示启用，这里用常量类
         employee.setStatus(StatusConstant.DISABLE);
 
-        //设置保存日期
-        employee.setCreateTime(LocalDateTime.now());
-        employee.setUpdateTime(LocalDateTime.now());
-
-        //在本次线程中，取到本次线程独立的存储空间内的局部变量
-        employee.setCreateUser(BaseContext.getCurrentId());
-        employee.setUpdateUser(BaseContext.getCurrentId());
+//        //设置保存日期
+//        employee.setCreateTime(LocalDateTime.now());
+//        employee.setUpdateTime(LocalDateTime.now());
+//
+//        //在本次线程中，取到本次线程独立的存储空间内的局部变量
+//        employee.setCreateUser(BaseContext.getCurrentId());
+//        employee.setUpdateUser(BaseContext.getCurrentId());
         BaseContext.removeCurrentId();
 
         employeeMapper.save(employee);
@@ -151,8 +157,8 @@ public class EmployeeServiceImpl implements EmployeeService {
         Employee employee = new Employee();
         BeanUtils.copyProperties(employeeDTO,employee);
 
-        employee.setUpdateTime(LocalDateTime.now());
-        employee.setUpdateUser(BaseContext.getCurrentId());
+//        employee.setUpdateTime(LocalDateTime.now());
+//        employee.setUpdateUser(BaseContext.getCurrentId());
         employeeMapper.update(employee);
         return Result.success();
     }
