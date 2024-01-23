@@ -80,7 +80,7 @@ public class EmployeeServiceImpl implements EmployeeService {
                 md5DigestAsHex(PasswordConstant.DEFAULT_PASSWORD.getBytes()));
 
         //0表示禁用，1表示启用，这里用常量类
-        employee.setStatus(StatusConstant.ENABLE);
+        employee.setStatus(StatusConstant.DISABLE);
 
         //设置保存日期
         employee.setCreateTime(LocalDateTime.now());

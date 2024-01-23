@@ -27,6 +27,8 @@ public class GlobalExceptionHandler {
 
     /**
      * 捕获sql语句username重复异常
+     *
+     * @return result<对象>
      */
     @ExceptionHandler
     public Result<Object> exceptionHandler(SQLIntegrityConstraintViolationException ex) {
