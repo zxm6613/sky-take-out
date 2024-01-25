@@ -17,15 +17,49 @@
             (#{fl.dishId},#{fl.name},#{fl.value})
         </foreach>
     </insert>
+    <update id="updateFlavors">
+        update dish
+        <foreach collection="flavors" item="fl">
+            <set>
+                <if test="fl.name != null">name = #{fl.name},</if>
+                <if test="fl.value != null">value = #{fl.value}</if>
+            </set>
+            where dish_id = #{fl.dishId}
+        </foreach>
+    </update>
+    <update id="update">
+        update dish
+        <set>
+            <if test="name != null and name != ''">name = #{name},</if>
+            <if test="image != null and image != ''">image = #{image},</if>
+            <if test="price != null">price = #{price},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="categoryId != null">category_id = #{categoryId},</if>
+            <if test="description != null and description != ''">description = #{description},</if>
+        </set>
+        where id = #{id}
+    </update>
+    <delete id="deleteFavory">
+        delete from dish_flavor where dish_id in
+        <foreach collection="ids" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+    </delete>
+    <delete id="deleteDishById">
+        delete from dish where id in
+        <foreach collection="ids" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+    </delete>
     <select id="page" resultType="com.sky.vo.DishVO">
         select d.id,
-               d.name,
-               d.price,
-               d.image,
-               d.description,
-               d.status,
-               d.update_time,
-               c.name categoryName
+        d.name,
+        d.price,
+        d.image,
+        d.description,
+        d.status,
+        d.update_time,
+        c.name categoryName
         from dish d
         join category c on d.category_id = c.id
         <where>
@@ -34,5 +68,29 @@
             <if test="status != null">and d.status = #{status}</if>
         </where>
         order by d.create_time desc
+    </select>
+    <select id="selectById" resultType="com.sky.vo.DishVO">
+        select d.*, c.id categoryId, c.name categoryName
+        from dish d
+                 left join category c on d.category_id = c.id
+        where d.id = #{id}
+    </select>
+    <select id="selectFlavors" resultType="com.sky.entity.DishFlavor">
+        select df.*
+        from dish d
+                 left join dish_flavor df on d.id = df.dish_id
+        where d.id = #{id}
+    </select>
+    <select id="dishSetmealRelationship" resultType="java.lang.Integer">
+        select COUNT(*) from setmeal_dish where dish_id in
+        <foreach collection="ids" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+    </select>
+    <select id="selectByCategoryId" resultType="com.sky.entity.Dish">
+        select d.*, c.id categoryId
+        from dish d
+                 left join category c on d.category_id = c.id
+        where c.id = #{id}
     </select>
 </mapper>

@@ -2,13 +2,12 @@ package com.sky.mapper;
 
 import com.github.pagehelper.Page;
 import com.sky.annotation.AutoFill;
+import com.sky.constant.AutoFillConstant;
 import com.sky.entity.Dish;
 import com.sky.entity.DishFlavor;
 import com.sky.enumeration.OperationType;
 import com.sky.vo.DishVO;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
@@ -51,4 +50,72 @@ public interface DishMapper {
      * @return p
      */
     Page<DishVO> page(Dish dish);
+
+    /**
+     * 按 ID 选择
+     *
+     * @param id 编号
+     * @return 菜 VO
+     */
+    DishVO selectById(Long id);
+
+    /**
+     * 查询口味
+     *
+     * @param id 编号
+     * @return 菜品风味
+     */
+    List<DishFlavor> selectFlavors(Long id);
+
+    /**
+     * 菜品套餐关系
+     *
+     * @param ids IDS
+     * @return int
+     */
+    int dishSetmealRelationship(List<Long> ids);
+
+    /**
+     * 删除口味
+     *
+     * @param ids IDS
+     */
+    void deleteFavory(List<Long> ids);
+
+    /**
+     * 按 ID 删除菜品
+     *
+     * @param ids IDS
+     */
+    void deleteDishById(List<Long> ids);
+
+    /**
+     * 按类别 ID 选择
+     *
+     * @param categoryId 类别 ID
+     * @return 菜
+     */
+    Dish selectByCategoryId(String categoryId);
+
+
+    /**
+     * 更新菜品的口味
+     *
+     * @param flavors flavors
+     */
+    void updateFlavors(List<DishFlavor> flavors);
+
+    /**
+     * 更新菜品的数据
+     *
+     * @param dish 菜
+     */
+    @AutoFill(OperationType.UPDATE)
+    void update(Dish dish);
+
+    @Delete("delete from dish_flavor where dish_id = #{id}")
+    void deleteOneFavory(Long id);
+
+    @Insert("insert into dish_flavor (dish_id, name, value) VALUES (#{dishId},#{name},#{value})")
+    void addDishFlavor(DishFlavor flavor);
 }

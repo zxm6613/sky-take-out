@@ -2,10 +2,13 @@ package com.sky.service.impl;
 
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
+import com.sky.constant.MessageConstant;
+import com.sky.constant.StatusConstant;
 import com.sky.dto.DishDTO;
 import com.sky.dto.DishPageQueryDTO;
 import com.sky.entity.Dish;
 import com.sky.entity.DishFlavor;
+import com.sky.exception.DeletionNotAllowedException;
 import com.sky.mapper.DishMapper;
 import com.sky.result.PageResult;
 import com.sky.service.DishService;
@@ -15,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -67,6 +71,94 @@ public class DishServiceImpl implements DishService {
         Page<DishVO> dishes = dishMapper.page(dish);
         long total = dishes.getTotal();
         List<DishVO> records = dishes.getResult();
-        return new PageResult(total,records);
+        return new PageResult(total, records);
+    }
+
+    /**
+     * 删除批处理
+     *
+     * @param ids IDS
+     */
+    @Override
+    @Transactional
+    public void deleteBatch(List<Long> ids) {
+        ids.forEach(id -> {
+            DishVO dishVO = this.selectById(id);
+            //起售状态的菜品不能删除
+            if (dishVO.getStatus() == 1) {
+                throw new DeletionNotAllowedException(MessageConstant.DISH_ON_SALE);
+            }
+        });
+        //套餐关联的菜品不能删除
+        int count = dishMapper.dishSetmealRelationship(ids);
+        if (count > 0) {
+            throw new DeletionNotAllowedException(MessageConstant.DISH_BE_RELATED_BY_SETMEAL);
+        }
+        //删除菜品，删除后记得口味也得删除(先删除口味)
+        dishMapper.deleteFavory(ids);
+        dishMapper.deleteDishById(ids);
+    }
+
+    /**
+     * 按 ID 查询
+     *
+     * @param id 编号
+     * @return 菜 VO
+     */
+    @Override
+    public DishVO selectById(Long id) {
+        DishVO dishVO = dishMapper.selectById(id);
+        List<DishFlavor> dishFlavor = dishMapper.selectFlavors(id);
+        dishVO.setFlavors(dishFlavor);
+        return dishVO;
+    }
+
+    /**
+     * 按类别 ID 选择
+     *
+     * @param categoryId 类别 ID
+     * @return 菜
+     */
+    @Override
+    public Dish selectByCategoryId(String categoryId) {
+        return dishMapper.selectByCategoryId(categoryId);
+    }
+
+    /**
+     * 更新菜品的数据
+     *
+     * @param dishDTO 菜 dto
+     */
+    @Override
+    @Transactional
+    public void update(DishDTO dishDTO) {
+        Dish dish = new Dish();
+        BeanUtils.copyProperties(dishDTO, dish);
+        List<DishFlavor> flavors = dishDTO.getFlavors();
+//        List<Long> ids = new ArrayList<>();
+        if (flavors != null) {
+            //修改口味表
+            flavors.forEach(flavor -> {
+                flavor.setDishId(dish.getId());
+//                ids.add(flavor.getDishId());
+            });
+            dishMapper.deleteOneFavory(dish.getId());
+            flavors.forEach(flavor -> {
+                dishMapper.addDishFlavor(flavor);
+            });
+//            dishMapper.addDishFlavors(flavors);
+        }
+        dishMapper.update(dish);
+    }
+
+    /**
+     * 菜是否启用
+     *
+     * @param status 地位
+     */
+    @Override
+    public void dishEnableOrNot(Integer status, Long id) {
+        Dish dish = Dish.builder().status(status).id(id).build();
+        dishMapper.update(dish);
     }
 }
