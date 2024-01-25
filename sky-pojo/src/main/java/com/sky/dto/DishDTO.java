@@ -7,6 +7,12 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 菜 dto
+ *
+ * @author 周简coding~~~
+ * @date 2024/01/25
+ */
 @Data
 public class DishDTO implements Serializable {
 
