@@ -93,4 +93,5 @@
                  left join category c on d.category_id = c.id
         where c.id = #{id}
     </select>
+
 </mapper>

@@ -120,7 +120,7 @@ public class DishServiceImpl implements DishService {
      * @return 菜
      */
     @Override
-    public Dish selectByCategoryId(String categoryId) {
+    public List<Dish> selectByCategoryId(Long categoryId) {
         return dishMapper.selectByCategoryId(categoryId);
     }
 

@@ -95,7 +95,7 @@ public interface DishMapper {
      * @param categoryId 类别 ID
      * @return 菜
      */
-    Dish selectByCategoryId(String categoryId);
+    List<Dish> selectByCategoryId(Long categoryId);
 
 
     /**
@@ -113,9 +113,19 @@ public interface DishMapper {
     @AutoFill(OperationType.UPDATE)
     void update(Dish dish);
 
+    /**
+     * 删除一个菜品
+     *
+     * @param id 编号
+     */
     @Delete("delete from dish_flavor where dish_id = #{id}")
     void deleteOneFavory(Long id);
 
+    /**
+     * 添加菜肴风味
+     *
+     * @param flavor 味道
+     */
     @Insert("insert into dish_flavor (dish_id, name, value) VALUES (#{dishId},#{name},#{value})")
     void addDishFlavor(DishFlavor flavor);
 }

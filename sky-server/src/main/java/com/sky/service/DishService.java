@@ -49,7 +49,7 @@ public interface DishService {
      * @param categoryId 类别 ID
      * @return 菜
      */
-    Dish selectByCategoryId(String categoryId);
+    List<Dish> selectByCategoryId(Long categoryId);
 
     /**
      * 更新菜品的数据

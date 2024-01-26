@@ -90,9 +90,9 @@ public class DishController {
      */
     @GetMapping("/list")
     @ApiOperation("根据分类id查询菜品")
-    public Result<Dish> selectByCategoryId(String categoryId) {
+    public Result<List<Dish>> selectByCategoryId(Long categoryId) {
         log.info("分类的id为{}", categoryId);
-        Dish dish = dishService.selectByCategoryId(categoryId);
+        List<Dish> dish = dishService.selectByCategoryId(categoryId);
         return Result.success(dish);
     }
 
