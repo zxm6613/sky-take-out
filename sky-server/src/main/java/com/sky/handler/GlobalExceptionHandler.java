@@ -39,7 +39,11 @@ public class GlobalExceptionHandler {
             //拿到username
             String[] split = errorMessage.split(" ");
             String username = split[2];
+            ex.printStackTrace();
             return Result.error(username + MessageConstant.USER_ALREADY_EXIST);
-        } else return Result.error(MessageConstant.UNKNOWN_ERROR);
+        } else {
+            ex.printStackTrace();
+            return Result.error(MessageConstant.UNKNOWN_ERROR);
+        }
     }
 }
