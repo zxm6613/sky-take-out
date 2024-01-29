@@ -62,10 +62,10 @@ public interface DishMapper {
     /**
      * 查询口味
      *
-     * @param id 编号
+     * @param dishId 编号
      * @return 菜品风味
      */
-    List<DishFlavor> selectFlavors(Long id);
+    List<DishFlavor> selectFlavors(Long dishId);
 
     /**
      * 菜品套餐关系
@@ -92,10 +92,9 @@ public interface DishMapper {
     /**
      * 按类别 ID 选择
      *
-     * @param categoryId 类别 ID
      * @return 菜
      */
-    List<Dish> selectByCategoryId(Long categoryId);
+    List<Dish> selectByCategoryId(Dish dish);
 
 
     /**

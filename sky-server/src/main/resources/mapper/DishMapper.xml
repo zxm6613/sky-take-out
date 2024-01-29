@@ -76,10 +76,7 @@
         where d.id = #{id}
     </select>
     <select id="selectFlavors" resultType="com.sky.entity.DishFlavor">
-        select df.*
-        from dish d
-                 left join dish_flavor df on d.id = df.dish_id
-        where d.id = #{id}
+        select * from dish_flavor where dish_id = #{dishId}
     </select>
     <select id="dishSetmealRelationship" resultType="java.lang.Integer">
         select COUNT(*) from setmeal_dish where dish_id in
@@ -88,10 +85,13 @@
         </foreach>
     </select>
     <select id="selectByCategoryId" resultType="com.sky.entity.Dish">
-        select d.*, c.id categoryId
-        from dish d
-                 left join category c on d.category_id = c.id
-        where c.id = #{id}
+        select *
+        from dish
+        <where>
+            <if test="categoryId != null">category_id = #{categoryId} and</if>
+            <if test="status != null">status = #{status}</if>
+        </where>
+
     </select>
 
 </mapper>

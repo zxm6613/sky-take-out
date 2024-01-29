@@ -19,7 +19,7 @@ import java.util.List;
  * @author 周简coding~~~
  * @date 2024/01/26
  */
-@RestController
+@RestController("adminSetmealController")
 @RequestMapping("/admin/setmeal")
 @Api("套餐控制器")
 @Slf4j

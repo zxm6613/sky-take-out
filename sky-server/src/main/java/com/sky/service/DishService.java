@@ -64,4 +64,12 @@ public interface DishService {
      * @param status 地位
      */
     void dishEnableOrNot(Integer status,Long id);
+
+    /**
+     * 根据分类id查询菜品
+     *
+     * @param dish 菜
+     * @return 列表<菜 VO>
+     */
+    List<DishVO> listWithFlavor(Dish dish);
 }

@@ -26,6 +26,12 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
  JQhI1PNfkNkW0yMxLhr8SQL4i9su1h
  *
  */
+/**
+ 小程序id：wxcf848b8acb49d37f
+ 密钥：cd92d5c6e8c6e1bbbebc47f398b9b659
+ *
+ */
+
 
 @SpringBootApplication
 @EnableTransactionManagement //开启注解方式的事务管理

@@ -24,7 +24,7 @@ import java.util.List;
  * @date 2024/01/25
  */
 
-@RestController
+@RestController("adminDishController")
 @RequestMapping("admin/dish")
 @Api("菜品控制器")
 @Slf4j

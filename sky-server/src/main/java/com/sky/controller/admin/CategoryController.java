@@ -21,7 +21,7 @@ import java.util.List;
  * @author 周简coding~~~
  * @date 2024/01/22
  */
-@RestController
+@RestController("adminCategoryController")
 @RequestMapping("/admin/category")
 @Api("分类控制器")
 @Slf4j
@@ -38,7 +38,7 @@ public class CategoryController {
      */
     @GetMapping("/page")
     @ApiOperation("分类：分页功能")
-    public Result<Object> page(CategoryPageQueryDTO categoryPageQueryDTO) {
+    public Result<PageResult> page(CategoryPageQueryDTO categoryPageQueryDTO) {
         log.info("分类参数有{}", categoryPageQueryDTO);
         PageResult result = categoryService.page(categoryPageQueryDTO);
         return Result.success(result);
@@ -92,14 +92,14 @@ public class CategoryController {
     /**
      * 根据类型查询分类
      *
-     * @param status 地位
+     * @param type 地位
      * @return result<分类>
      */
     @GetMapping("/list")
     @ApiOperation("根据类型查询分类")
-    public Result<List<Category>> selectByType(Integer status) {
-        log.info("根据类型查询分类{}",status);
-        List<Category> categories = categoryService.selectByType(status);
+    public Result<List<Category>> selectByType(Integer type) {
+        log.info("根据类型查询分类{}",type);
+        List<Category> categories = categoryService.selectByType(type);
         return Result.success(categories);
     }
 

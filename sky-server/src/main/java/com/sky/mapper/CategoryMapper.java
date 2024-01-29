@@ -46,9 +46,9 @@ public interface CategoryMapper {
     /**
      * 根据类型查询分类
      *
-     * @param status 地位
+     * @param type 地位
      */
-    List<Category> selectByType(Integer status);
+    List<Category> selectByType(Integer type);
 
     /**
      * 根据id删除分类

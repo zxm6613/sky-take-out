@@ -114,12 +114,12 @@ public class CategoryServiceImpl implements CategoryService {
     /**
      * 根据类型查询分类
      *
-     * @param status 地位
+     * @param type 地位
      * @return result<分类>
      */
     @Override
-    public List<Category> selectByType(Integer status) {
-        return categoryMapper.selectByType(status);
+    public List<Category> selectByType(Integer type) {
+        return categoryMapper.selectByType(type);
     }
 
     /**
