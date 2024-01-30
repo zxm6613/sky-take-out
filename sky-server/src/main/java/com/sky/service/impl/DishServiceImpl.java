@@ -14,14 +14,16 @@ import com.sky.service.DishService;
 import com.sky.vo.DishVO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 /**
- * 碟品服务实现
+ * 菜品逻辑实现
  *
  * @author 周简coding~~~
  * @date 2024/01/25
@@ -31,6 +33,8 @@ public class DishServiceImpl implements DishService {
 
     @Autowired
     private DishMapper dishMapper;
+    @Autowired
+    private RedisTemplate redisTemplate;
 
     /**
      * 插入菜品和菜品口味
@@ -40,6 +44,9 @@ public class DishServiceImpl implements DishService {
     @Override
     @Transactional
     public void addDish(DishDTO dishDTO) {
+        //精确清理缓存
+        String key = "dish_"+dishDTO.getCategoryId();
+        cleanCache(key);
         //先插入菜品数据
         Dish dish = new Dish();
         BeanUtils.copyProperties(dishDTO, dish);
@@ -81,6 +88,9 @@ public class DishServiceImpl implements DishService {
     @Override
     @Transactional
     public void deleteBatch(List<Long> ids) {
+        //删除菜品全部缓存
+        cleanCache("dish_*");
+
         ids.forEach(id -> {
             DishVO dishVO = this.selectById(id);
             //起售状态的菜品不能删除
@@ -132,6 +142,9 @@ public class DishServiceImpl implements DishService {
     @Override
     @Transactional
     public void update(DishDTO dishDTO) {
+        //删除菜品全部缓存
+        cleanCache("dish_*");
+
         Dish dish = new Dish();
         BeanUtils.copyProperties(dishDTO, dish);
         List<DishFlavor> flavors = dishDTO.getFlavors();
@@ -158,6 +171,9 @@ public class DishServiceImpl implements DishService {
      */
     @Override
     public void dishEnableOrNot(Integer status, Long id) {
+        //删除菜品全部缓存,如果删除一个缓存，还要数据库查询数据，索性全删
+        cleanCache("dish_*");
+
         Dish dish = Dish.builder().status(status).id(id).build();
         dishMapper.update(dish);
     }
@@ -187,5 +203,16 @@ public class DishServiceImpl implements DishService {
         }
 
         return dishVOList;
+    }
+
+    /**
+     * 清理缓存
+     * 在修改删除插入等非查询操作时，获取数据是从缓存中拿到的，有可能导致数据库和缓存中的数据不一致
+     *
+     * @param pattern 模式
+     */
+    private void cleanCache(String pattern){
+        Set keys = redisTemplate.keys(pattern);
+        redisTemplate.delete(keys);
     }
 }
