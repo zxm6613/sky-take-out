@@ -1,11 +1,14 @@
 package com.sky.controller.user;
 
+import com.sky.dto.OrdersPageQueryDTO;
 import com.sky.dto.OrdersPaymentDTO;
 import com.sky.dto.OrdersSubmitDTO;
+import com.sky.result.PageResult;
 import com.sky.result.Result;
 import com.sky.service.OrderService;
 import com.sky.vo.OrderPaymentVO;
 import com.sky.vo.OrderSubmitVO;
+import com.sky.vo.OrdersPageQueryVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -27,15 +30,15 @@ public class OrderController {
     private OrderService orderService;
 
     /**
-     * 提交
+     * 提交订单
      *
      * @param ordersSubmitDTO 订单提交 DTO
      * @return 结果<订单提交VO>
      */
     @PostMapping("/submit")
     @ApiOperation("用户下单")
-    public Result<OrderSubmitVO> submit(@RequestBody OrdersSubmitDTO ordersSubmitDTO){
-        log.info("用户下单数据{}",ordersSubmitDTO);
+    public Result<OrderSubmitVO> submit(@RequestBody OrdersSubmitDTO ordersSubmitDTO) {
+        log.info("用户下单数据{}", ordersSubmitDTO);
         OrderSubmitVO orderSubmitVO = orderService.submit(ordersSubmitDTO);
         return Result.success(orderSubmitVO);
     }
@@ -57,5 +60,61 @@ public class OrderController {
         //模拟交易成功，修改订单状态
         orderService.paySuccess(ordersPaymentDTO.getOrderNumber()); //订单号
         return Result.success(orderPaymentVO);
+    }
+
+    /**
+     * 订单查询
+     *
+     * @param ordersPageQueryDTO 订单页面查询 DTO
+     * @return 结果<页面结果>
+     */
+    @GetMapping("/historyOrders")
+    @ApiOperation("订单查询")
+    public Result<PageResult> page(OrdersPageQueryDTO ordersPageQueryDTO) {
+        log.info("历史订单查询分页参数：{}", ordersPageQueryDTO);
+        PageResult pageResult = orderService.page(ordersPageQueryDTO);
+        return Result.success(pageResult);
+    }
+
+    /**
+     * 订单明细
+     *
+     * @param id 编号
+     * @return 结果<订单页面查询 vo>
+     */
+    @GetMapping("/orderDetail/{id}")
+    @ApiOperation("订单详情")
+    public Result<OrdersPageQueryVO> ordersDetail(@PathVariable Long id) {
+        log.info("要查询的订单id为：{}", id);
+        OrdersPageQueryVO ordersPageQueryVO = orderService.ordersDetail(id);
+        return Result.success(ordersPageQueryVO);
+    }
+
+    /**
+     * 继续订单
+     *
+     * @param id 编号
+     * @return result<对象>
+     */
+    @PostMapping("/repetition/{id}")
+    @ApiOperation("再来一单")
+    public Result<Object> continueOrders(@PathVariable Long id) {
+        log.info("再来一单的订单id为{}", id);
+        orderService.continueOrders(id);
+        return Result.success();
+    }
+
+    /**
+     * 取消订单
+     *
+     * @param id 编号
+     * @return result<对象>
+     */
+    @PutMapping("/cancel/{id}")
+    @ApiOperation("取消订单")
+    public Result<Object> cancelOrders(@PathVariable Long id){
+        log.info("取消的订单id是{}",id);
+        orderService.cancelOrders(id);
+        return Result.success();
     }
 }
