@@ -31,8 +31,6 @@ public class PayNotifyController {
 
     /**
      * 支付成功回调
-     *
-     * @param request
      */
     @RequestMapping("/paySuccess")
     public void paySuccessNotify(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -60,10 +58,6 @@ public class PayNotifyController {
 
     /**
      * 读取数据
-     *
-     * @param request
-     * @return
-     * @throws Exception
      */
     private String readData(HttpServletRequest request) throws Exception {
         BufferedReader reader = request.getReader();
@@ -80,10 +74,6 @@ public class PayNotifyController {
 
     /**
      * 数据解密
-     *
-     * @param body
-     * @return
-     * @throws Exception
      */
     private String decryptData(String body) throws Exception {
         JSONObject resultObject = JSON.parseObject(body);

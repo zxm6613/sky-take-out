@@ -4,6 +4,8 @@ import com.sky.entity.User;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 
+import java.util.Map;
+
 /**
  * 用户映射器
  *
@@ -30,9 +32,29 @@ public interface UserMapper {
      */
     void insert(User user);
 
+    /**
+     * 按 ID 选择
+     *
+     * @param id 编号
+     * @return 用户
+     */
     @Select("select * from user where id = #{id}")
     User selectById(Long id);
 
+    /**
+     * 按 ID 获取
+     *
+     * @param id 编号
+     * @return 用户
+     */
     @Select("select * from user where id = #{id}")
     User getById(Long id);
+
+    /**
+     * 根据map查询用户个数
+     *
+     * @param map 地图
+     * @return 整数
+     */
+    Integer sumByMap(Map<String, Object> map);
 }

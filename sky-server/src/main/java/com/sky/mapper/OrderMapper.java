@@ -1,11 +1,16 @@
 package com.sky.mapper;
 
 import com.github.pagehelper.Page;
+import com.sky.dto.GoodsSalesDTO;
 import com.sky.dto.OrdersPageQueryDTO;
 import com.sky.entity.Orders;
 import com.sky.vo.OrdersPageQueryVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
 
 @Mapper
 public interface OrderMapper {
@@ -53,6 +58,51 @@ public interface OrderMapper {
      */
     Page<OrdersPageQueryVO> adminPage(OrdersPageQueryDTO ordersPageQueryDTO);
 
+    /**
+     * 计数
+     *
+     * @param status 地位
+     * @return 整数
+     */
     @Select("select COUNT(*) from orders where status = #{status}")
     Integer count(Integer status);
+
+    /**
+     * 按状态和订单时间选择 LT
+     *
+     * @param status 地位
+     * @param time   时间
+     * @return 列表<订单>
+     */
+    @Select("select * from orders where status = #{status} and order_time < #{time}")
+    List<Orders> selectByStatusAndOrderTimeLT(Integer status, LocalDateTime time);
+
+    /**
+     * 按时间选择
+     *
+     * @param map 地图
+     * @return 双
+     */
+    Double sumByMap(Map<String, Object> map);
+
+    /**
+     * 用map查订单数量
+     *
+     * @param map 地图
+     * @return 整数
+     */
+    Integer countByMap(Map<String, Object> map);
+
+    /**
+     * 获得 Top10 销售
+     *
+     * @param beginTime 开始时间
+     * @param endTime   结束时间
+     * @return 列表<商品销售DTO>
+     */
+//    @Select("select od.name,sum(od.number)" +
+//            " from order_detail od ,orders o " +
+//            "where od.order_id = o.id and o.status = 5 " +
+//            "and o.order_time > #{beginTime} and o.order_time < #{endTime} group by od.name")
+    List<GoodsSalesDTO> getSalesTop10(LocalDateTime beginTime, LocalDateTime endTime);
 }

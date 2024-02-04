@@ -10,6 +10,7 @@ import com.sky.vo.DishVO;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 菜品映射器
@@ -127,4 +128,9 @@ public interface DishMapper {
      */
     @Insert("insert into dish_flavor (dish_id, name, value) VALUES (#{dishId},#{name},#{value})")
     void addDishFlavor(DishFlavor flavor);
+
+    /**
+     * 根据条件统计菜品数量
+     */
+    Integer countByMap(Map map);
 }

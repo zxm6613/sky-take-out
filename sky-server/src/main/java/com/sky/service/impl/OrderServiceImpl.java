@@ -1,5 +1,6 @@
 package com.sky.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
@@ -18,15 +19,17 @@ import com.sky.vo.OrderPaymentVO;
 import com.sky.vo.OrderStatisticsVO;
 import com.sky.vo.OrderSubmitVO;
 import com.sky.vo.OrdersPageQueryVO;
+import com.sky.webSocket.WebSocketServer;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 订购服务 实现
@@ -51,6 +54,8 @@ public class OrderServiceImpl implements OrderService {
     private WeChatPayUtil weChatPayUtil;
     @Autowired
     private ShoppingCartServiceImpl shoppingCartService;
+    @Autowired
+    private WebSocketServer webSocketServer;
 
 
     /**
@@ -162,10 +167,11 @@ public class OrderServiceImpl implements OrderService {
     /**
      * 支付成功，修改订单状态
      */
-    public void paySuccess(String outTradeNo) {
+    @Override
+    public void paySuccess(String number) {
 
         // 根据订单号查询订单
-        Orders ordersDB = orderMapper.getByNumber(outTradeNo);
+        Orders ordersDB = orderMapper.getByNumber(number);
 
         // 根据订单id更新订单的状态、支付方式、支付状态、结账时间
         Orders orders = Orders.builder()
@@ -176,6 +182,8 @@ public class OrderServiceImpl implements OrderService {
                 .build();
 
         orderMapper.update(orders);
+
+
     }
 
     /**
@@ -295,7 +303,6 @@ public class OrderServiceImpl implements OrderService {
     }
 
 
-
     /**
      * 获取单个订单信息
      *
@@ -309,7 +316,7 @@ public class OrderServiceImpl implements OrderService {
 
         //再封装数据到OrdersPageQueryVO
         OrdersPageQueryVO ordersPageQueryVO = new OrdersPageQueryVO();
-        BeanUtils.copyProperties(orders,ordersPageQueryVO);
+        BeanUtils.copyProperties(orders, ordersPageQueryVO);
         List<OrderDetail> orderDetailList
                 = orderDetailMapper.selectByOrderId(ordersPageQueryVO.getId());
         ordersPageQueryVO.setOrderDetailList(orderDetailList);
@@ -413,6 +420,27 @@ public class OrderServiceImpl implements OrderService {
                 .status(Orders.COMPLETED)
                 .build();
         orderMapper.update(orders);
+    }
+
+    /**
+     * 客户催单
+     *
+     * @param id 编号
+     */
+    @Override
+    public void reminder(Long id) {
+        Orders orderDB = orderMapper.selectById(id);
+
+        if (orderDB == null){
+            throw new OrderBusinessException(MessageConstant.ORDER_NOT_FOUND);
+        }
+
+        Map map = new HashMap();
+        map.put("type",2);
+        map.put("orderId",id);
+        map.put("content","订单号："+orderDB.getNumber());
+
+        webSocketServer.sendToAllClient(JSON.toJSONString(map));
     }
 
 
